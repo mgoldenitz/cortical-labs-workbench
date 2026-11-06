@@ -9,7 +9,7 @@ import shutil
 import numpy as np
 import pytest
 
-from workbench import cli
+from workbench import cli, procs
 from workbench.config import RunConfig
 from workbench.pipeline import finalize, run
 from workbench.recording_io import load_recording
@@ -28,10 +28,21 @@ def runs(tmp_path_factory):
     return out, made
 
 
+def _why(name, run_dir, m):
+    """Enough context to diagnose a run that did not complete, from the assertion message alone."""
+    failed = [c for c in (m.get("integrity") or {}).get("checks", []) if not c["passed"]]
+    log = run_dir / "worker.log"
+    tail = log.read_text(errors="replace")[-2000:] if log.exists() else "(no worker.log)"
+    return (f"{name}: status={m.get('status')!r} error={m.get('error')!r} run_dir={run_dir}\n"
+            f"failed checks: {json.dumps(failed, indent=1, default=str)}\n"
+            f"worker: {json.dumps(m['acquisition'].get('worker'), default=str)[:2000]}\n"
+            f"worker.log tail:\n{tail}")
+
+
 def test_runs_complete_with_expected_outputs(runs):
     _, made = runs
     for name, (run_dir, m) in made.items():
-        assert m["status"] == "complete", (name, m.get("integrity"), m.get("error"))
+        assert m["status"] == "complete", _why(name, run_dir, m)
         for f in ("recording.h5", "manifest.json", "metrics.json", "channel_metrics.csv", "report.html",
                   "worker.log", "worker_result.json", "config.json"):
             assert (run_dir / f).exists(), (name, f)
@@ -99,6 +110,7 @@ def test_overrun_in_log_marks_run_incomplete_and_keeps_files(runs, tmp_path):
     assert (work / "recording.h5").exists()
     assert "INCOMPLETE" in (work / "report.html").read_text()
     assert json.loads((work / "metrics.json").read_text())["status"] == "incomplete"
+    assert cli.main(["verify", str(work)]) == 2  # consistent with its manifest, but not complete
 
 
 def test_replay_reproduces_source_frames(runs):
@@ -123,6 +135,26 @@ def test_failed_run_is_kept_and_marked(runs, tmp_path):
     assert m["error"]
     assert (run_dir / "manifest.json").exists() and (run_dir / "worker.log").exists()
     assert "FAILED" in (run_dir / "report.html").read_text()
+    assert cli.main(["verify", str(run_dir)]) == 2
+
+
+@pytest.mark.skipif(not procs.supported(), reason="process cleanup is implemented for Linux /proc only")
+def test_timeout_stops_worker_and_simulator_processes(tmp_path):
+    # A 30 s window with a 6 s timeout: the worker is still recording when it is stopped.
+    # Before the fix, cl-sdk's data producer (started in its own session) outlived the worker.
+    run_dir, m = run(RunConfig(seconds=30, seed=3, accelerated=False), tmp_path, timeout_s=6)
+    assert m["status"] == "failed"
+    assert "timed out" in m["error"]
+    worker = m["acquisition"]["worker"]
+    assert worker["timed_out"] is True and worker["returncode"] is None
+    cleanup = worker["process_cleanup"]
+    assert cleanup["supported"] is True
+    assert cleanup["found"], "expected the worker and simulator processes to be found by marker"
+    assert cleanup["remaining"] == []
+    assert procs.find_marked(m["run_id"]) == []
+    for f in ("manifest.json", "config.json", "worker.log", "report.html"):
+        assert (run_dir / f).exists(), f
+    assert cli.main(["verify", str(run_dir)]) == 2
 
 
 @pytest.mark.parametrize("name", ["acc_a", "wall"])

@@ -29,6 +29,8 @@ runs/<run_id>/
 | `config.py` | Run settings and the exact `CL_SDK_*` variables they map to | no |
 | `_worker.py` | The only code that opens the simulator | yes, public API |
 | `pipeline.py` | Starts the worker, collects results, runs the analysis, writes the manifest; never deletes a run folder | indirectly |
+| `procs.py` | Finds and stops a run's processes by an inherited environment marker (Linux `/proc` only) | no |
+| `verify.py` | `workbench verify`: manifest structure, file inventory, checksums, recomputed digests; exit codes 0, 1, 2 | no |
 | `recording_io.py` | Reads HDF5 through `cl.util.RecordingView` | yes, public API |
 | `layout.py` | Electrode grid, ground and reference channels | yes, private module, isolated here |
 | `integrity.py` | Recording checks | no |
@@ -43,6 +45,8 @@ Logic that can be tested without the simulator (integrity, canonical, metrics, r
 ## Why a child process per run
 
 Inside one Python process the simulator keeps running between `cl.open()` calls, so the second session starts at whatever frame the first reached (observed: 77,500, then 105,000, then 132,500). A fresh process always starts at frame 0, which makes the acquisition window absolute. It also lets the parent control the simulator's environment completely: inherited `CL_SDK_*` variables are dropped, the workbench sets every documented option explicitly, the worker runs with its working directory set to the run folder, and the worker reports back every `CL_SDK_*` variable it saw after importing `cl` (which loads `.env` files). Any variable the workbench did not set fails the `no_unexpected_sdk_env` check.
+
+The simulator's own helper processes (for example `cl-data-producer`) are started by cl-sdk with `start_new_session=True`, so they leave the worker's process group and are re-parented when the worker dies. Before 2026-11-06 a worker timeout left them running. The parent now sets `CL_WORKBENCH_RUN_MARKER=<run_id>` in the worker's environment, every simulator process inherits it, and `procs.stop_marked` finds them through `/proc/<pid>/environ` after the worker exits or is stopped, with a bounded settle, SIGTERM, SIGKILL sequence (at most about 10 s). This is Linux only.
 
 ## Acquisition window and alignment
 

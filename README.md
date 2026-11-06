@@ -74,7 +74,13 @@ report: runs/20261106T220121Z-s42-20a15f/report.html
 
 The report is a single HTML file with no external resources. Open the path on the `report:` line in any browser, for example with `xdg-open` on Linux, `open` on macOS, or `start` in a Windows shell, or by double-clicking it in a file manager.
 
-`workbench verify` reopens a complete run folder and checks it against the reference values its own manifest recorded: the SHA-256 of every listed file, and the canonical sample and spike digests recomputed from `recording.h5`. It detects files that changed, went missing or no longer match the recorded data. It does not authenticate who produced the run and is not a digital signature: anyone who edits both the files and the manifest can make them agree.
+`workbench verify` reopens a run folder and checks it against the reference values its own manifest recorded: the manifest's required fields, the file inventory (which must exist and not be empty, and for a complete run must list every output), the size and SHA-256 of every listed file, the canonical sample and spike digests recomputed from `recording.h5`, and the metrics digest recomputed from `metrics.json`. Files in the folder that the manifest does not list are named but not checked. Exit codes:
+
+- 0: the status is `complete` and everything above matches.
+- 1: the folder cannot be verified: no manifest, a manifest that is not valid JSON or is missing required fields, an unknown status, a missing or empty file inventory, a missing required output, or any size, checksum or digest mismatch.
+- 2: the files match the manifest, but the recorded status is `running`, `incomplete` or `failed`, so this is not a verified complete run.
+
+This is a consistency check. It does not authenticate who produced the run and is not a digital signature: anyone who edits both the files and the manifest can make them agree.
 
 Each run gets its own folder, `runs/<UTC time>-s<seed>-<random>/`:
 
@@ -90,18 +96,21 @@ Runs that fail are kept; nothing is deleted. The final status (`complete`, `inco
 
 - Incomplete run whose recording does not cover the whole window (for example the accelerated-mode data loss): no `metrics.json` or `channel_metrics.csv`, and no canonical digests in the manifest.
 - Failed run with no recording: no `recording.h5`, `metrics.json` or `channel_metrics.csv`; `worker_result.json` only if the simulator process got far enough to write it.
-- Run stopped with Ctrl-C while the simulator is recording: `manifest.json` is set to `failed` and no report is written. Ctrl-C later, during analysis or report writing, leaves `manifest.json` at `running`.
-- Process killed outright (or the machine stopped): `manifest.json` may still say `running`, and later files are absent.
+- Worker that runs past its timeout (by default three times the window plus 90 s): the worker and every simulator process it started are stopped, the run is marked `failed` with a "timed out" error, and the files written so far are kept, including the partial `recording.h5` if there is one.
+- Run stopped with Ctrl-C while the simulator is recording: the worker and simulator processes are stopped the same way, `manifest.json` is set to `failed` with the error "interrupted by user", and no report is written. Ctrl-C later, during analysis or report writing, leaves `manifest.json` at `running`.
+- Process killed outright (or the machine stopped): `manifest.json` may still say `running`, later files are absent, and simulator processes may be left running. `workbench verify` exits with 1 or 2 on such a folder, never 0.
+
+Stopping simulator processes is implemented for Linux only. The cl-sdk simulator starts its helper processes in new sessions, so stopping the worker or its process group does not reach them. Every process of a run instead inherits the environment variable `CL_WORKBENCH_RUN_MARKER` set to the run id, and after the worker exits (or is stopped) the workbench finds processes carrying that marker through `/proc`, waits up to 3 s for them to exit on their own, then sends SIGTERM, waits up to 5 s, sends SIGKILL to any left and waits up to 2 s more. The manifest records the process ids found, terminated and killed under `acquisition.worker.process_cleanup`, and `remaining` should be empty. On macOS and Windows there is no `/proc`; the record says `"supported": false` and nothing is checked or claimed.
 - If the report itself cannot be rendered, the manifest records `report_error` and `report.html` may be missing.
 
 ## Tests
 
 ```bash
-pytest                 # all 48 tests, about 15 s
+pytest                 # all 93 tests, about 25 s
 pytest -m "not sdk"    # only tests that do not start the simulator
 ```
 
-The `sdk` tests start the simulator in child processes: repeated runs with the same seed must produce identical canonical data and metrics (including wall-clock against accelerated), a different seed must change the sample data, a replay must reproduce its source frames, tampering must be caught by `verify`, and failed or overrun runs must be kept and marked.
+The `sdk` tests start the simulator in child processes: repeated runs with the same seed must produce identical canonical data and metrics (including wall-clock against accelerated), a different seed must change the sample data, a replay must reproduce its source frames, tampering must be caught by `verify`, failed or overrun runs must be kept and marked, and a worker that times out must leave no worker or simulator process running. The other tests check `verify` on hand-built manifests (every status, missing or malformed fields, missing or empty inventories, missing outputs) and the process cleanup on a process tree that escapes its process group.
 
 ## Documentation
 

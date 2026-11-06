@@ -30,4 +30,18 @@ jobs:
           python -m pip install --no-deps -e .
           python -m pip freeze --exclude-editable
       - name: Run the full test suite
-        run: python -m pytest -v -p no:cacheprovider
+        # Test folders (run folders with manifests, worker logs and recordings) go under
+        # RUNNER_TEMP so they can be uploaded if anything fails.
+        run: |
+          set -o pipefail
+          python -m pytest -v -p no:cacheprovider --basetemp="$RUNNER_TEMP/pytest" 2>&1 | tee "$RUNNER_TEMP/pytest.log"
+      - name: Keep logs and test run folders from a failed run
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-tests-py${{ matrix.python-version }}
+          path: |
+            ${{ runner.temp }}/pytest.log
+            ${{ runner.temp }}/pytest/
+          retention-days: 14
+          if-no-files-found: warn
