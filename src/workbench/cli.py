@@ -41,31 +41,11 @@ def _cmd_run(args) -> int:
 
 
 def _cmd_verify(args) -> int:
-    from . import canonical, manifest as mf
-    from .recording_io import load_recording
+    from .verify import verify_run
 
-    run_dir = Path(args.run_dir)
-    m = json.loads((run_dir / "manifest.json").read_text())
-    problems = []
-    for name, entry in (m.get("files") or {}).items():
-        p = run_dir / name
-        if not p.exists():
-            problems.append(f"missing file {name}")
-        elif mf.sha256_file(p) != entry["sha256"]:
-            problems.append(f"checksum mismatch: {name}")
-    if m.get("canonical") and (run_dir / "recording.h5").exists():
-        rec = load_recording(run_dir / "recording.h5")
-        canon = canonical.canonicalize(rec.samples, rec.spike_ts, rec.spike_ch, m["canonical"]["window_frames"])
-        d = canonical.digests(canon)
-        for k in ("samples_sha256", "spikes_sha256", "n_spikes"):
-            if d[k] != m["canonical"][k]:
-                problems.append(f"canonical {k} differs from manifest")
-    print(f"status recorded in manifest: {m.get('status')}")
-    if problems:
-        print("VERIFY FAILED:\n  " + "\n  ".join(problems))
-        return 1
-    print("verify OK: file checksums and canonical digests match the manifest")
-    return 0
+    code, lines = verify_run(Path(args.run_dir))
+    print("\n".join(lines))
+    return code
 
 
 def _cmd_compare(args) -> int:
