@@ -26,7 +26,7 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from . import canonical, integrity, manifest as mf
+from . import canonical, integrity, manifest as mf, procs
 from .config import WINDOW_START_FRAME, RunConfig
 from .metrics import MetricsConfig, compute_all
 
@@ -56,10 +56,13 @@ def unexpected_env(seen: dict, expected: dict) -> dict:
     return out
 
 
-def child_env(cfg: RunConfig) -> dict:
-    env = {k: v for k, v in os.environ.items() if not k.startswith("CL_SDK_")}
+def child_env(cfg: RunConfig, run_id: str | None = None) -> dict:
+    env = {k: v for k, v in os.environ.items() if not k.startswith("CL_SDK_") and k != procs.RUN_MARKER_ENV}
     env.update(cfg.sdk_env())
     env["PYTHONUNBUFFERED"] = "1"
+    if run_id:
+        # Inherited by the worker and every simulator process it starts; used to find them for cleanup.
+        env[procs.RUN_MARKER_ENV] = run_id
     return env
 
 
@@ -80,22 +83,35 @@ def acquire(cfg: RunConfig, run_dir: Path, run_id: str, timeout_s: float | None 
     (run_dir / "config.json").write_text(json.dumps(worker_cfg, indent=2))
     timeout_s = timeout_s or (cfg.seconds * 3 + 90)
     log_path = run_dir / "worker.log"
+    timed_out = False
     with open(log_path, "w") as log:
+        proc = subprocess.Popen(
+            [sys.executable, "-m", "workbench._worker", str(run_dir / "config.json")],
+            cwd=run_dir, env=child_env(cfg, run_id), stdout=log, stderr=subprocess.STDOUT,
+        )
         try:
-            proc = subprocess.run(
-                [sys.executable, "-m", "workbench._worker", str(run_dir / "config.json")],
-                cwd=run_dir, env=child_env(cfg), stdout=log, stderr=subprocess.STDOUT,
-                timeout=timeout_s,
-            )
-            returncode = proc.returncode
+            returncode = proc.wait(timeout=timeout_s)
         except subprocess.TimeoutExpired:
+            timed_out = True
+        finally:
+            # Stop the worker (on timeout or Ctrl-C) and any simulator process it left behind (always).
+            cleanup = procs.stop_marked(run_id, settle_s=0 if proc.poll() is None else 3)
+            if proc.poll() is None:  # not reachable through /proc, or ignored SIGKILL
+                proc.kill()
+            proc.wait(timeout=5)
+        if timed_out:
             returncode = None
     result_path = run_dir / "worker_result.json"
-    result = json.loads(result_path.read_text()) if result_path.exists() else {"ok": False}
+    try:
+        result = json.loads(result_path.read_text()) if result_path.exists() else {"ok": False}
+    except json.JSONDecodeError:  # cut short mid-write
+        result = {"ok": False, "error": "worker_result.json is not valid JSON"}
     result["returncode"] = returncode
-    if returncode is None:
+    result["timed_out"] = timed_out
+    result["process_cleanup"] = cleanup
+    if timed_out:
         result["ok"] = False
-        result.setdefault("error", f"worker timed out after {timeout_s:.0f} s")
+        result["error"] = f"worker timed out after {timeout_s:.0f} s and was stopped"
     elif returncode != 0 and "error" not in result:
         result["ok"] = False
         result["error"] = f"worker exited with code {returncode}; see worker.log"
@@ -111,7 +127,7 @@ def _find_recording(run_dir: Path, result: dict) -> Path | None:
 
 
 def finalize(run_dir: Path, manifest: dict, *, worker_log: str, env_unexpected: dict, cfg: RunConfig,
-             worker_error: str | None = None) -> dict:
+             worker_error: str | None = None, timed_out: bool = False) -> dict:
     """Analyse the recording in run_dir and complete the manifest. Never raises for data problems."""
     from .layout import load_layout
     from .recording_io import load_recording
@@ -144,7 +160,7 @@ def finalize(run_dir: Path, manifest: dict, *, worker_log: str, env_unexpected: 
             "errors": [c["name"] for c in checks if not c["passed"] and c["severity"] == "error"],
             "warnings": [c["name"] for c in checks if not c["passed"] and c["severity"] == "warning"],
         }
-        manifest["status"] = integrity.status_from_checks(checks)
+        manifest["status"] = "failed" if timed_out else integrity.status_from_checks(checks)
         if rec.samples.shape[0] >= cfg.window_frames and rec.samples.ndim == 2:
             canon = canonical.canonicalize(rec.samples, rec.spike_ts, rec.spike_ch, cfg.window_frames)
             manifest["canonical"] = canonical.digests(canon)
@@ -238,5 +254,5 @@ def run(cfg: RunConfig, out_dir: Path, *, timeout_s: float | None = None) -> tup
     if worker_error:
         manifest["error"] = worker_error
     manifest = finalize(run_dir, manifest, worker_log=log, env_unexpected=env_bad, cfg=cfg,
-                        worker_error=worker_error)
+                        worker_error=worker_error, timed_out=bool(result.get("timed_out")))
     return run_dir, manifest
