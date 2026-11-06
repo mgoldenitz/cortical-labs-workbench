@@ -1,0 +1,5 @@
+note: accelerated mode lost data in one 10 s test on 2026-11-06; the integrity checks will mark the run incomplete if that happens.
+run:    <evidence>/py313/known-issue/20261106T223653Z-s42-75f069
+status: INCOMPLETE  (SYNTHETIC data)
+failed checks:   rows_match_duration, window_covered, no_ring_buffer_overrun
+report: <evidence>/py313/known-issue/20261106T223653Z-s42-75f069/report.html

@@ -56,7 +56,7 @@ Runs that fail a check are kept and marked `incomplete` or `failed` in every fil
 ## Tests
 
 ```bash
-pytest                 # all tests, about 15 s
+pytest                 # all 47 tests, about 13 s
 pytest -m "not sdk"    # only tests that do not start the simulator
 ```
 

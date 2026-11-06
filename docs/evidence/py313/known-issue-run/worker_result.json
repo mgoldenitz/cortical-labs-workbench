@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "env_seen": {
+    "CL_SDK_ACCELERATED_TIME": "1",
+    "CL_SDK_RANDOM_SEED": "42",
+    "CL_SDK_REPLAY_START_OFFSET": "0",
+    "CL_SDK_SAMPLE_MEAN": "170",
+    "CL_SDK_SPIKE_PERCENTILE": "99.995",
+    "CL_SDK_SPIKE_VISIBILITY": "0",
+    "CL_SDK_VISUALISATION": "0"
+  },
+  "is_simulator": true,
+  "timestamp_at_open": 0,
+  "channel_count": 64,
+  "frames_per_second": 25000,
+  "timestamp_at_record_call": 0,
+  "timestamp_at_stop": 250001,
+  "record_wall_seconds": 0.298,
+  "recording_path": "<evidence>/py313/known-issue/20261106T223653Z-s42-75f069/2026-11-06_22-36-54.636+00-00_raw.h5"
+}

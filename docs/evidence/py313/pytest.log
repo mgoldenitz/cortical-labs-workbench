@@ -1,0 +1,57 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0 -- <evidence>/py313/venv/bin/python
+rootdir: <evidence>/clone
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.16.0, platformdirs-4.14.5
+collecting ... collected 47 items
+
+tests/test_canonical.py::test_trims_window_and_orders_spikes PASSED      [  2%]
+tests/test_canonical.py::test_input_spike_order_does_not_matter PASSED   [  4%]
+tests/test_canonical.py::test_frames_after_window_do_not_matter PASSED   [  6%]
+tests/test_canonical.py::test_single_sample_change_changes_digest PASSED [  8%]
+tests/test_canonical.py::test_digest_byte_layout_is_stable PASSED        [ 10%]
+tests/test_canonical.py::test_short_recording_rejected PASSED            [ 12%]
+tests/test_config_layout_report.py::test_sdk_env_is_complete_and_explicit PASSED [ 14%]
+tests/test_config_layout_report.py::test_wall_clock_is_default_and_labels PASSED [ 17%]
+tests/test_config_layout_report.py::test_invalid_config[bad0] PASSED     [ 19%]
+tests/test_config_layout_report.py::test_invalid_config[bad1] PASSED     [ 21%]
+tests/test_config_layout_report.py::test_child_env_drops_inherited_sdk_vars PASSED [ 23%]
+tests/test_config_layout_report.py::test_unexpected_env_detection PASSED [ 25%]
+tests/test_config_layout_report.py::test_layout_from_private_module_is_valid PASSED [ 27%]
+tests/test_config_layout_report.py::test_validate_layout_rejects_bad_grids PASSED [ 29%]
+tests/test_config_layout_report.py::test_report_is_self_contained_and_labelled PASSED [ 31%]
+tests/test_config_layout_report.py::test_report_flags_incomplete_runs PASSED [ 34%]
+tests/test_config_layout_report.py::test_report_without_data_for_failed_runs PASSED [ 36%]
+tests/test_integrity.py::test_good_recording_is_complete PASSED          [ 38%]
+tests/test_integrity.py::test_misaligned_start_is_incomplete PASSED      [ 40%]
+tests/test_integrity.py::test_row_count_mismatch_is_incomplete PASSED    [ 42%]
+tests/test_integrity.py::test_window_not_covered PASSED                  [ 44%]
+tests/test_integrity.py::test_spike_bounds_order_and_channels PASSED     [ 46%]
+tests/test_integrity.py::test_wrong_dtype PASSED                         [ 48%]
+tests/test_integrity.py::test_ring_buffer_overrun_in_log PASSED          [ 51%]
+tests/test_integrity.py::test_unexpected_env PASSED                      [ 53%]
+tests/test_integrity.py::test_zero_gap_is_a_warning_only PASSED          [ 55%]
+tests/test_integrity.py::test_longest_zero_run PASSED                    [ 57%]
+tests/test_metrics.py::test_channel_metrics_known_values PASSED          [ 59%]
+tests/test_metrics.py::test_isi_cv_needs_three_spikes PASSED             [ 61%]
+tests/test_metrics.py::test_summary_leaves_out_excluded_channels PASSED  [ 63%]
+tests/test_metrics.py::test_population_rate_drops_partial_bin_and_out_of_range PASSED [ 65%]
+tests/test_metrics.py::test_invalid_window_rejected[kwargs0] PASSED      [ 68%]
+tests/test_metrics.py::test_invalid_window_rejected[kwargs1] PASSED      [ 70%]
+tests/test_metrics.py::test_mismatched_spike_arrays_rejected PASSED      [ 72%]
+tests/test_metrics.py::test_no_spikes_gives_zeros_not_nan PASSED         [ 74%]
+tests/test_metrics.py::test_compare_metrics PASSED                       [ 76%]
+tests/test_sdk_integration.py::test_runs_complete_with_expected_outputs PASSED [ 78%]
+tests/test_sdk_integration.py::test_unique_run_ids PASSED                [ 80%]
+tests/test_sdk_integration.py::test_same_seed_same_canonical_data_and_metrics PASSED [ 82%]
+tests/test_sdk_integration.py::test_whole_files_differ_but_canonical_data_does_not PASSED [ 85%]
+tests/test_sdk_integration.py::test_different_seed_changes_sample_data PASSED [ 87%]
+tests/test_sdk_integration.py::test_verify_detects_tampering PASSED      [ 89%]
+tests/test_sdk_integration.py::test_overrun_in_log_marks_run_incomplete_and_keeps_files PASSED [ 91%]
+tests/test_sdk_integration.py::test_replay_reproduces_source_frames PASSED [ 93%]
+tests/test_sdk_integration.py::test_failed_run_is_kept_and_marked PASSED [ 95%]
+tests/test_sdk_integration.py::test_analysis_uses_exact_window[acc_a] PASSED [ 97%]
+tests/test_sdk_integration.py::test_analysis_uses_exact_window[wall] PASSED [100%]
+
+============================= 47 passed in 13.17s ==============================

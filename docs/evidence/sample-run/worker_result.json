@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "env_seen": {
+    "CL_SDK_ACCELERATED_TIME": "0",
+    "CL_SDK_RANDOM_SEED": "42",
+    "CL_SDK_REPLAY_START_OFFSET": "0",
+    "CL_SDK_SAMPLE_MEAN": "170",
+    "CL_SDK_SPIKE_PERCENTILE": "99.995",
+    "CL_SDK_SPIKE_VISIBILITY": "0",
+    "CL_SDK_VISUALISATION": "0"
+  },
+  "is_simulator": true,
+  "timestamp_at_open": 180,
+  "channel_count": 64,
+  "frames_per_second": 25000,
+  "timestamp_at_record_call": 5355,
+  "timestamp_at_stop": 127025,
+  "record_wall_seconds": 5.074,
+  "recording_path": "<evidence>/py313/runs/20261106T223635Z-s42-01ec63/2026-11-06_22-36-36.197+00-00_raw.h5"
+}
