@@ -31,7 +31,7 @@ The official docs say the simulator "generates non-learning control data that do
 | 9 | Simulator recordings leave `git_hash`, `git_branch`, `git_status` empty, set `hostname` to `cl-sdk` and `file_format.version` to `SDK`. | `smoke.py`, workbench manifests |
 | 10 | Running the cloned cl-sdk repo's own pytest suite was blocked by the session's permission checker as external code. It was not worked around. | (not run) |
 
-Unverified hypothesis for observation 7: the simulator's ring buffer holds about 131,072 frames (2^17, 5.24 s), and in accelerated mode the data producer gets that far ahead before the recording process starts reading. Not confirmed from the source.
+Observation 7 is written up with versions and reproduction steps in [known-issues.md](known-issues.md). Unverified hypothesis for observation 7: the simulator's ring buffer holds about 131,072 frames (2^17, 5.24 s), and in accelerated mode the data producer gets that far ahead before the recording process starts reading. Not confirmed from the source.
 
 ## Whitepaper points that affect this project
 

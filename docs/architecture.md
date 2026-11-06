@@ -46,7 +46,14 @@ Inside one Python process the simulator keeps running between `cl.open()` calls,
 
 ## Acquisition window and alignment
 
-Window: device frames `[0, N)`, `N = round(seconds x 25,000)`. The recording starts with `from_timestamp=0`, which reads the frames produced between `cl.open()` and the `record()` call back out of the simulator's buffer (about 0.2 s of wall-clock time in tests). The worker stops the recording after frame `N` exists, so files hold `N` plus a few frames; canonical extraction trims to `N`. `stop_after_frames` is not used because, with `from_timestamp` in the past, the SDK counts it from the call time.
+Window: device frames `[0, N)`, `N = round(seconds x 25,000)`. The recording starts with `from_timestamp=0`, which reads the frames produced between `cl.open()` and the `record()` call back out of the simulator's buffer (about 0.2 s of wall-clock time in tests). The worker stops the recording after frame `N` exists, so files hold `N` plus a few frames; canonical extraction trims to `N`.
+
+Where the extra frames come from (checked in cl-sdk 1.0.0 source and run output): `Neurons.read(1, N)` returns once frame `N` exists, that is once the simulator's write timestamp is at least `N + 1`. `Recording.stop()` then ends the recording at the write timestamp at the moment it is called. In wall-clock mode the data producer writes 5 frames per tick (`DEFAULT_TICK_RATE_HZ = 5000` in `cl/_sim/_data_producer.py`: one 200 us tick is 5 frames at 25 kHz; the source comment there says "2ms ticks", which does not match 5 kHz), so frames `[N, N+5)` arrive together and the recording ends at `N + 5`: every 5 s wall-clock run so far has `duration_frames = 125005`. In accelerated mode the producer advances exactly to the requested timestamp, so recordings end at `N + 1`. The overshoot is not guaranteed to be 5: a delay between the two calls would add more. It does not matter for results, because everything downstream uses only frames `[0, N)`:
+
+- `canonical.canonicalize` keeps `samples[:N]` and spikes with `0 <= timestamp < N`;
+- both digests are computed from that trimmed data (the samples digest also encodes the shape `N x 64`);
+- metrics, `metrics_sha256` and every report figure are computed from the same trimmed data, with `n_frames = N`;
+- `tests/test_sdk_integration.py::test_analysis_uses_exact_window` checks this on real runs: the file has more than `N` rows, while the digests recomputed from `samples[:N]`, the spike count for `timestamp < N` and `metrics.summary.n_frames` all match the manifest. `stop_after_frames` is not used because, with `from_timestamp` in the past, the SDK counts it from the call time.
 
 `CL_SDK_REPLAY_START_OFFSET` (the `--start-offset` option, default 0) chooses which part of the source stream lands at frame 0. It is always set, because without it the simulator picks a random start on each open. For replays, offset 0 maps the source file's first frame to device frame 0 (tested: the first 12,500 frames match exactly).
 

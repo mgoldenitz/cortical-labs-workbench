@@ -58,17 +58,41 @@ No `s3:DeleteObject`: the CLI cannot delete artifacts; cleanup is a deliberate a
 
 ### Cost estimate
 
-Measured sizes: a recording grows by 3.24 MB per second of window (64 channels, int16, 25 kHz, plus spikes); other files add about 0.25 MB per run. A 5 s run is about 16.5 MB.
+#### Assumptions
 
-Workload A: 100 runs of 5 s per month, all kept, 50 report views and 10 recording downloads per month.
+- Region: ca-central-1 (Canada Central). Prices: AWS Price List API offer files, S3 published 2026-11-04 and data transfer 2026-11-03. On-demand list prices in USD, before tax. AWS bills storage per GB-month where 1 GB = 2^30 bytes (GiB).
+- Measured artifact sizes, from four 5 s wall-clock runs with seed 42 on 2026-11-06 (identical across the four):
+
+| File | Bytes |
+| --- | --- |
+| recording.h5 | 16,604,411 |
+| report.html | 165,444 |
+| metrics.json | 13,109 |
+| manifest.json | about 9,200 |
+| channel_metrics.csv | 3,268 |
+| worker_result.json, config.json, worker.log | about 1,290 together |
+| Total per run | 16,796,723 (0.01564 GiB) |
+
+- Workload A: 100 complete 5 s runs uploaded per month; each run's 8 files go up with 8 PUTs plus 1 PUT for `_UPLOAD_COMPLETE.json`; 8 HEAD requests per run to verify checksums; 1 LIST per upload (overwrite check); 50 presigned views of a report and 10 presigned downloads of a recording per month.
+- Retention for this estimate: every complete run is kept, nothing expires, nothing is overwritten (so versioning creates no noncurrent versions), no `diagnostics/` uploads. The figure below is for month 12, when 1,200 runs (18.77 GiB) are stored; storage cost grows by about 0.04 USD each month while nothing is deleted.
+
+#### Breakdown, month 12
 
 | Item | Quantity | Unit price (USD) | Monthly cost (USD) |
 | --- | --- | --- | --- |
-| S3 Standard storage, month 12 | 19.7 GB | 0.025 per GB-month | 0.49 |
-| PUT requests | 1,000 | 0.0055 per 1,000 | 0.01 |
-| GET/HEAD requests | 1,000 | 0.0044 per 10,000 | < 0.01 |
-| Data transfer out to internet | 0.17 GB | 0.09 per GB | 0.02 |
-| Total | | | about 0.52 |
+| S3 Standard storage | 18.77 GiB-month | 0.025 per GB-month (first 50 TB) | 0.469 |
+| PUT requests | 900 | 0.0055 per 1,000 | 0.005 |
+| LIST requests | 100 | 0.0055 per 1,000 | 0.001 |
+| GET and HEAD requests | 860 | 0.0044 per 10,000 | 0.0004 |
+| Data transfer in (uploads) | 1.56 GiB | 0.00 | 0.000 |
+| Data transfer out to internet | 0.162 GiB (8.3 MB reports, 166 MB recordings) | 0.09 per GB | 0.015 |
+| Total | | | about 0.49 |
+
+The earlier figure of 0.52 USD used decimal megabytes, an estimated 16.5 MB per run and 10 PUTs per run; the table above replaces it with measured sizes, binary GB as AWS bills, and the request counts the proposed commands would make. Averaged over the first 12 months, storage is about 0.25 USD per month.
+
+Included services: S3 (storage, requests) and AWS data transfer. SSE-S3 encryption, Block Public Access, versioning, lifecycle rules and bucket policies have no separate charge.
+
+Excluded from the estimate: taxes; the AWS free tier (it would lower the bill); AWS Support plans; CloudFormation (no charge for AWS-native resources); IAM and IAM Identity Center (no charge); CloudTrail data events, KMS customer-managed keys, S3 Replication, S3 Storage Lens advanced metrics, CloudWatch alarms (none of these are proposed); requests made from the AWS console by hand; stage 2 compute, below.
 
 Workload B (heavier): 1,000 runs of 30 s per month, all kept. New data 97 GB per month; storage at month 12 is 1.17 TB, about 29 USD per month, which is why the retention decision matters. Request and transfer costs stay under 1 USD per month unless recordings are downloaded often (0.09 USD per GB).
 
@@ -92,7 +116,7 @@ Infrastructure would be one CloudFormation template in `infra/s3-artifacts.yaml`
 5. A presigned URL works before expiry and returns 403 after it; `recording.h5` cannot be shared without `--include-raw`.
 6. A test deliberately corrupts a byte before upload and the upload is rejected.
 7. Teardown instructions run end to end on a test stack and leave no billable resources.
-8. Measured cost for the first month is under 2 USD for workload A.
+8. Measured cost for the first month is under 2 USD for workload A, checked in Cost Explorer.
 
 ## Stage 2 (later): on-demand containerised runs
 

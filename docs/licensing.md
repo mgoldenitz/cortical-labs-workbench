@@ -29,6 +29,6 @@ Run outputs (`runs/`, `*.h5`) are ignored by git. Whether simulator output files
 - Building a container image or any bundle that includes cl-sdk (the proposed AWS execution stage): that is Sharing the Licensed Material. Attribution duties apply, and the image must not be used or offered commercially without permission. This is called out again in [aws-proposal.md](aws-proposal.md).
 - Paid work, a product, a paid service, or use inside a company: flag for permission or legal review first.
 
-## Decision needed: a license for this project's own code
+## This project's own code
 
-The repository has no `LICENSE` file, so by default nobody else has permission to reuse the code. Michael should choose one (for example MIT or Apache-2.0 for the original code) or keep it unlicensed. Choosing a permissive license for our code does not change the terms of cl-sdk, which users still install under CC BY-NC 4.0.
+No license has been chosen for the original code in this repository, so default copyright applies. The options are listed separately in [project-license-options.md](project-license-options.md); no choice is made here.

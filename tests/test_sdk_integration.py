@@ -123,3 +123,33 @@ def test_failed_run_is_kept_and_marked(runs, tmp_path):
     assert m["error"]
     assert (run_dir / "manifest.json").exists() and (run_dir / "worker.log").exists()
     assert "FAILED" in (run_dir / "report.html").read_text()
+
+
+@pytest.mark.parametrize("name", ["acc_a", "wall"])
+def test_analysis_uses_exact_window(runs, name):
+    """Recordings overshoot the window by a few frames; analysis must use exactly [0, N)."""
+    from workbench.canonical import canonicalize, samples_digest, spikes_digest
+    from workbench.metrics import compute_all
+    from workbench.layout import load_layout
+
+    run_dir, m = runs[1][name]
+    n = m["config"]["window_frames"]
+    rec = load_recording(run_dir / "recording.h5")
+    assert rec.samples.shape[0] > n  # the overshoot exists (N+1 accelerated, N+5 wall clock so far)
+    assert m["canonical"]["window_frames"] == n
+
+    # Recompute independently from the raw file, slicing by hand.
+    window = np.ascontiguousarray(rec.samples[:n])
+    keep = rec.spike_ts < n
+    c = canonicalize(window, rec.spike_ts[keep], rec.spike_ch[keep], n)
+    assert samples_digest(c) == m["canonical"]["samples_sha256"]
+    assert spikes_digest(c) == m["canonical"]["spikes_sha256"]
+    assert m["canonical"]["n_spikes"] == int(keep.sum())
+
+    metrics = json.loads((run_dir / "metrics.json").read_text())
+    assert metrics["summary"]["n_frames"] == n
+    layout = load_layout()
+    again = compute_all(c.spike_ts, c.spike_ch, n_frames=n, fps=25_000, channel_count=64,
+                        excluded_channels=layout.non_signal_channels)
+    assert again["summary"] == metrics["summary"]
+    assert again["channels"] == metrics["channels"]

@@ -67,12 +67,15 @@ The `sdk` tests start the simulator in child processes: repeated runs with the s
 - [docs/plan.md](docs/plan.md): scope and acceptance criteria for this milestone
 - [docs/architecture.md](docs/architecture.md): modules, acquisition window, canonical digests, run status
 - [docs/discovery.md](docs/discovery.md): what was checked, versions, observed SDK behaviour; scripts in `discovery/`
-- [docs/licensing.md](docs/licensing.md) and [docs/third-party-licenses.md](docs/third-party-licenses.md)
+- [docs/known-issues.md](docs/known-issues.md): accelerated-mode data loss, with versions and reproduction steps
+- [docs/reproducing.md](docs/reproducing.md): exact commands for the Python 3.12 and 3.13 test runs and the determinism evidence; logs in `docs/evidence/`
+- [docs/licensing.md](docs/licensing.md) and [docs/third-party-licenses.md](docs/third-party-licenses.md): third-party licenses
+- [docs/project-license-options.md](docs/project-license-options.md): options for this project's own license (none chosen)
 - [docs/aws-proposal.md](docs/aws-proposal.md): proposed optional AWS storage and execution (nothing provisioned)
 
 ## Known limitations
 
 - cl-sdk is pinned to 1.0.0. The electrode layout comes from a private SDK module (`src/workbench/layout.py`), which a future release may change.
-- Accelerated mode lost the start of every 10 s and 30 s recording tried; wall-clock mode is the default.
+- Accelerated mode lost the start of every 10 s and 30 s recording tried in the test environment ([docs/known-issues.md](docs/known-issues.md)); wall-clock mode is the default.
 - No stimulation or closed-loop features yet; the simulator would not respond to them.
-- The project's own code has no license yet.
+- The project's own code has no license yet; options are in [docs/project-license-options.md](docs/project-license-options.md).
