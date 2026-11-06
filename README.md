@@ -90,14 +90,14 @@ Runs that fail are kept; nothing is deleted. The final status (`complete`, `inco
 
 - Incomplete run whose recording does not cover the whole window (for example the accelerated-mode data loss): no `metrics.json` or `channel_metrics.csv`, and no canonical digests in the manifest.
 - Failed run with no recording: no `recording.h5`, `metrics.json` or `channel_metrics.csv`; `worker_result.json` only if the simulator process got far enough to write it.
-- Run stopped with Ctrl-C: `manifest.json` is set to `failed` and no report is written.
+- Run stopped with Ctrl-C while the simulator is recording: `manifest.json` is set to `failed` and no report is written. Ctrl-C later, during analysis or report writing, leaves `manifest.json` at `running`.
 - Process killed outright (or the machine stopped): `manifest.json` may still say `running`, and later files are absent.
 - If the report itself cannot be rendered, the manifest records `report_error` and `report.html` may be missing.
 
 ## Tests
 
 ```bash
-pytest                 # all 47 tests, about 13 s
+pytest                 # all 48 tests, about 15 s
 pytest -m "not sdk"    # only tests that do not start the simulator
 ```
 

@@ -74,6 +74,8 @@ def _write_channel_csv(path: Path, rows: list[dict]) -> None:
 
 def acquire(cfg: RunConfig, run_dir: Path, run_id: str, timeout_s: float | None = None) -> dict:
     """Start the worker, wait for it, return its result dict (with returncode and log)."""
+    # The worker runs with cwd=run_dir, so every path handed to it must be absolute.
+    run_dir = run_dir.resolve()
     worker_cfg = {**cfg.to_dict(), "run_dir": str(run_dir), "run_id": run_id}
     (run_dir / "config.json").write_text(json.dumps(worker_cfg, indent=2))
     timeout_s = timeout_s or (cfg.seconds * 3 + 90)

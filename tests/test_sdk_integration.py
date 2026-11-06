@@ -153,3 +153,15 @@ def test_analysis_uses_exact_window(runs, name):
                         excluded_channels=layout.non_signal_channels)
     assert again["summary"] == metrics["summary"]
     assert again["channels"] == metrics["channels"]
+
+
+def test_cli_run_with_default_relative_out_dir(tmp_path, monkeypatch):
+    # `workbench run` defaults to --out runs, a relative path; the worker runs with
+    # cwd=run_dir, so this checks the paths handed to it still resolve.
+    monkeypatch.chdir(tmp_path)
+    assert cli.main(["run", "--seconds", "1", "--seed", "42"]) == 0
+    (run_dir,) = (tmp_path / "runs").iterdir()
+    m = json.loads((run_dir / "manifest.json").read_text())
+    assert m["status"] == "complete", (m.get("error"), m.get("integrity"))
+    assert (run_dir / "recording.h5").exists()
+    assert cli.main(["verify", str(run_dir.relative_to(tmp_path))]) == 0
