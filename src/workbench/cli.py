@@ -19,8 +19,9 @@ def _cmd_run(args) -> int:
         population_bin_ms=args.bin_ms, active_rate_threshold_hz=args.active_hz,
     )
     if cfg.accelerated:
-        print("note: accelerated mode lost data in one 10 s test on 2026-11-06; the integrity "
-              "checks will mark the run incomplete if that happens.", file=sys.stderr)
+        print("note: in the tested environment, accelerated mode lost the start of every 10 s and "
+              "30 s recording tried (windows up to 5 s were complete); see docs/known-issues.md. "
+              "The integrity checks mark such a run incomplete.", file=sys.stderr)
     run_dir, manifest = run(cfg, Path(args.out))
     print(f"run:    {run_dir}")
     print(f"status: {manifest['status'].upper()}  ({manifest['data_label']} data)")
