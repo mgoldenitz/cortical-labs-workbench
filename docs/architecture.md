@@ -72,7 +72,7 @@ Same seed, same offset and same window gave identical canonical digests and metr
 
 ## Integrity checks and run status
 
-`complete`: all error-level checks pass. `incomplete`: a recording exists but at least one error-level check failed; metrics are computed only if the window is fully covered, and every output says INCOMPLETE. `failed`: no usable recording, or analysis raised; the folder keeps the manifest, worker log and a report stating the error. The check list is in `docs/plan.md` and `src/workbench/integrity.py`.
+`complete`: all error-level checks pass. `incomplete`: a recording exists but at least one error-level check failed; metrics are computed only if the window is fully covered; the status is recorded in `manifest.json`, the report banner and `metrics.json` (when written), as the README lists. `failed`: no usable recording, or analysis raised; the folder keeps the manifest, worker log and a report stating the error. The check list is in `docs/plan.md` and `src/workbench/integrity.py`.
 
 ## Timing
 

@@ -34,7 +34,7 @@ Hypothesis, not verified: the simulator's ring buffer holds about 131,072 frames
 
 ### How the workbench handles it
 
-Wall-clock mode is the default. With `--accelerated`, a run that hits this problem fails three error-level checks (`rows_match_duration`, `window_covered`, `no_ring_buffer_overrun`), is marked `incomplete` in every output, keeps all its files, and exits with code 2. The `start_aligned` check does not catch it, because the file's `start_timestamp` is still 0.
+Wall-clock mode is the default. With `--accelerated`, a run that hits this problem fails three error-level checks (`rows_match_duration`, `window_covered`, `no_ring_buffer_overrun`), is marked `incomplete` in its manifest, report and console output, keeps all its files, and exits with code 2. The `start_aligned` check does not catch it, because the file's `start_timestamp` is still 0.
 
 ### Reproduce
 
