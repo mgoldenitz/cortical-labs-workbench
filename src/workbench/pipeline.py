@@ -84,6 +84,7 @@ def acquire(cfg: RunConfig, run_dir: Path, run_id: str, timeout_s: float | None 
     timeout_s = timeout_s or (cfg.seconds * 3 + 90)
     log_path = run_dir / "worker.log"
     timed_out = False
+    interrupt = None
     with open(log_path, "w") as log:
         proc = subprocess.Popen(
             [sys.executable, "-m", "workbench._worker", str(run_dir / "config.json")],
@@ -93,12 +94,18 @@ def acquire(cfg: RunConfig, run_dir: Path, run_id: str, timeout_s: float | None 
             returncode = proc.wait(timeout=timeout_s)
         except subprocess.TimeoutExpired:
             timed_out = True
+        except KeyboardInterrupt as exc:  # Ctrl-C: clean up below, then let it propagate
+            interrupt = exc
+            raise
         finally:
             # Stop the worker (on timeout or Ctrl-C) and any simulator process it left behind (always).
             cleanup = procs.stop_marked(run_id, settle_s=0 if proc.poll() is None else 3)
             if proc.poll() is None:  # not reachable through /proc, or ignored SIGKILL
                 proc.kill()
             proc.wait(timeout=5)
+            if interrupt is not None:
+                # run() records this in the manifest before re-raising the interrupt.
+                interrupt.process_cleanup = cleanup
         if timed_out:
             returncode = None
     result_path = run_dir / "worker_result.json"
@@ -230,8 +237,10 @@ def run(cfg: RunConfig, out_dir: Path, *, timeout_s: float | None = None) -> tup
 
     try:
         result = acquire(cfg, run_dir, run_id, timeout_s=timeout_s)
-    except KeyboardInterrupt:
+    except KeyboardInterrupt as exc:
         manifest.update(status="failed", error="interrupted by user", finished_utc=mf.utc_now())
+        if hasattr(exc, "process_cleanup"):  # same key as after a timeout
+            manifest["acquisition"]["worker"] = {"process_cleanup": exc.process_cleanup}
         mf.write_json(run_dir / "manifest.json", manifest)
         raise
     log = result.pop("log", "")
