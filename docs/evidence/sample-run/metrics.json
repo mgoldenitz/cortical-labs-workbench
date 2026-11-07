@@ -1,0 +1,606 @@
+{
+  "summary": {
+    "metrics_version": 1,
+    "duration_s": 5.0,
+    "n_frames": 125000,
+    "frames_per_second": 25000,
+    "channels_included": 59,
+    "channels_excluded": [
+      0,
+      4,
+      7,
+      56,
+      63
+    ],
+    "active_channels": 59,
+    "active_rate_threshold_hz": 0.1,
+    "total_spikes": 342,
+    "mean_rate_hz": 1.159322033898305,
+    "median_rate_hz": 1.0,
+    "max_rate_hz": 2.2,
+    "population_bin_ms": 100.0,
+    "population_rate_mean_hz": 68.39999999999999,
+    "population_rate_max_hz": 120.0,
+    "population_rate_n_bins": 50
+  },
+  "channels": [
+    {
+      "channel": 0,
+      "excluded": true,
+      "spike_count": 0,
+      "rate_hz": 0.0,
+      "active": false,
+      "isi_mean_ms": null,
+      "isi_cv": null
+    },
+    {
+      "channel": 1,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 807.2159999999999,
+      "isi_cv": 1.1285324509659664
+    },
+    {
+      "channel": 2,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 369.3066666666667,
+      "isi_cv": 0.948663816395017
+    },
+    {
+      "channel": 3,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 954.2266666666666,
+      "isi_cv": 1.0817125055568415
+    },
+    {
+      "channel": 4,
+      "excluded": true,
+      "spike_count": 0,
+      "rate_hz": 0.0,
+      "active": false,
+      "isi_mean_ms": null,
+      "isi_cv": null
+    },
+    {
+      "channel": 5,
+      "excluded": false,
+      "spike_count": 7,
+      "rate_hz": 1.4,
+      "active": true,
+      "isi_mean_ms": 543.14,
+      "isi_cv": 0.9470291273049886
+    },
+    {
+      "channel": 6,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 1417.64,
+      "isi_cv": 0.22107593945865459
+    },
+    {
+      "channel": 7,
+      "excluded": true,
+      "spike_count": 0,
+      "rate_hz": 0.0,
+      "active": false,
+      "isi_mean_ms": null,
+      "isi_cv": null
+    },
+    {
+      "channel": 8,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 631.6933333333333,
+      "isi_cv": 0.9032543058078606
+    },
+    {
+      "channel": 9,
+      "excluded": false,
+      "spike_count": 7,
+      "rate_hz": 1.4,
+      "active": true,
+      "isi_mean_ms": 401.23333333333335,
+      "isi_cv": 0.8502155194357399
+    },
+    {
+      "channel": 10,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 911.64,
+      "isi_cv": 0.6055930868549474
+    },
+    {
+      "channel": 11,
+      "excluded": false,
+      "spike_count": 3,
+      "rate_hz": 0.6,
+      "active": true,
+      "isi_mean_ms": 592.9,
+      "isi_cv": 0.9784111991904201
+    },
+    {
+      "channel": 12,
+      "excluded": false,
+      "spike_count": 7,
+      "rate_hz": 1.4,
+      "active": true,
+      "isi_mean_ms": 554.8933333333333,
+      "isi_cv": 1.041379404499127
+    },
+    {
+      "channel": 13,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 616.5,
+      "isi_cv": 0.5498293839015959
+    },
+    {
+      "channel": 14,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 953.744,
+      "isi_cv": 0.821020310661194
+    },
+    {
+      "channel": 15,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 728.4300000000001,
+      "isi_cv": 0.8256686397364575
+    },
+    {
+      "channel": 16,
+      "excluded": false,
+      "spike_count": 8,
+      "rate_hz": 1.6,
+      "active": true,
+      "isi_mean_ms": 578.4628571428572,
+      "isi_cv": 0.7778775946298547
+    },
+    {
+      "channel": 17,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 510.456,
+      "isi_cv": 0.632720222205475
+    },
+    {
+      "channel": 18,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 1104.66,
+      "isi_cv": 0.5319608512936175
+    },
+    {
+      "channel": 19,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 741.3,
+      "isi_cv": 0.6328116498706354
+    },
+    {
+      "channel": 20,
+      "excluded": false,
+      "spike_count": 7,
+      "rate_hz": 1.4,
+      "active": true,
+      "isi_mean_ms": 449.2066666666667,
+      "isi_cv": 0.7442511092431018
+    },
+    {
+      "channel": 21,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 831.0300000000001,
+      "isi_cv": 0.7320914726247424
+    },
+    {
+      "channel": 22,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 1022.75,
+      "isi_cv": 0.53041766437048
+    },
+    {
+      "channel": 23,
+      "excluded": false,
+      "spike_count": 3,
+      "rate_hz": 0.6,
+      "active": true,
+      "isi_mean_ms": 1960.9999999999998,
+      "isi_cv": 0.6437531871494134
+    },
+    {
+      "channel": 24,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 1214.4933333333336,
+      "isi_cv": 0.7534790756120795
+    },
+    {
+      "channel": 25,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 893.8,
+      "isi_cv": 0.34481802027723546
+    },
+    {
+      "channel": 26,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 857.512,
+      "isi_cv": 0.883328946155717
+    },
+    {
+      "channel": 27,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 1060.45,
+      "isi_cv": 0.39065756046358424
+    },
+    {
+      "channel": 28,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 1283.9733333333334,
+      "isi_cv": 0.5286392740922701
+    },
+    {
+      "channel": 29,
+      "excluded": false,
+      "spike_count": 3,
+      "rate_hz": 0.6,
+      "active": true,
+      "isi_mean_ms": 483.79999999999995,
+      "isi_cv": 0.3110376188507648
+    },
+    {
+      "channel": 30,
+      "excluded": false,
+      "spike_count": 10,
+      "rate_hz": 2.0,
+      "active": true,
+      "isi_mean_ms": 405.5555555555556,
+      "isi_cv": 0.5268243855078246
+    },
+    {
+      "channel": 31,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 618.976,
+      "isi_cv": 0.6476492999062635
+    },
+    {
+      "channel": 32,
+      "excluded": false,
+      "spike_count": 8,
+      "rate_hz": 1.6,
+      "active": true,
+      "isi_mean_ms": 378.1028571428572,
+      "isi_cv": 0.7100369723095162
+    },
+    {
+      "channel": 33,
+      "excluded": false,
+      "spike_count": 7,
+      "rate_hz": 1.4,
+      "active": true,
+      "isi_mean_ms": 625.1533333333333,
+      "isi_cv": 0.6141243392436425
+    },
+    {
+      "channel": 34,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 645.76,
+      "isi_cv": 0.7379836112388437
+    },
+    {
+      "channel": 35,
+      "excluded": false,
+      "spike_count": 10,
+      "rate_hz": 2.0,
+      "active": true,
+      "isi_mean_ms": 537.0755555555556,
+      "isi_cv": 0.8413127167492475
+    },
+    {
+      "channel": 36,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 469.19000000000005,
+      "isi_cv": 0.5304365217756346
+    },
+    {
+      "channel": 37,
+      "excluded": false,
+      "spike_count": 3,
+      "rate_hz": 0.6,
+      "active": true,
+      "isi_mean_ms": 1912.62,
+      "isi_cv": 0.43235979964655813
+    },
+    {
+      "channel": 38,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 726.2,
+      "isi_cv": 0.3759653374597354
+    },
+    {
+      "channel": 39,
+      "excluded": false,
+      "spike_count": 7,
+      "rate_hz": 1.4,
+      "active": true,
+      "isi_mean_ms": 805.6866666666666,
+      "isi_cv": 0.5729358560651314
+    },
+    {
+      "channel": 40,
+      "excluded": false,
+      "spike_count": 9,
+      "rate_hz": 1.8,
+      "active": true,
+      "isi_mean_ms": 474.07500000000005,
+      "isi_cv": 1.0543135484716981
+    },
+    {
+      "channel": 41,
+      "excluded": false,
+      "spike_count": 3,
+      "rate_hz": 0.6,
+      "active": true,
+      "isi_mean_ms": 657.0,
+      "isi_cv": 0.8979604261796044
+    },
+    {
+      "channel": 42,
+      "excluded": false,
+      "spike_count": 3,
+      "rate_hz": 0.6,
+      "active": true,
+      "isi_mean_ms": 1749.9,
+      "isi_cv": 0.7609691982398995
+    },
+    {
+      "channel": 43,
+      "excluded": false,
+      "spike_count": 8,
+      "rate_hz": 1.6,
+      "active": true,
+      "isi_mean_ms": 523.742857142857,
+      "isi_cv": 0.9001975491190265
+    },
+    {
+      "channel": 44,
+      "excluded": false,
+      "spike_count": 8,
+      "rate_hz": 1.6,
+      "active": true,
+      "isi_mean_ms": 610.6857142857142,
+      "isi_cv": 0.251115145632955
+    },
+    {
+      "channel": 45,
+      "excluded": false,
+      "spike_count": 8,
+      "rate_hz": 1.6,
+      "active": true,
+      "isi_mean_ms": 562.6342857142857,
+      "isi_cv": 1.1032246849249083
+    },
+    {
+      "channel": 46,
+      "excluded": false,
+      "spike_count": 1,
+      "rate_hz": 0.2,
+      "active": true,
+      "isi_mean_ms": null,
+      "isi_cv": null
+    },
+    {
+      "channel": 47,
+      "excluded": false,
+      "spike_count": 3,
+      "rate_hz": 0.6,
+      "active": true,
+      "isi_mean_ms": 628.36,
+      "isi_cv": 0.05926538926729901
+    },
+    {
+      "channel": 48,
+      "excluded": false,
+      "spike_count": 10,
+      "rate_hz": 2.0,
+      "active": true,
+      "isi_mean_ms": 494.3999999999999,
+      "isi_cv": 0.9880812730719242
+    },
+    {
+      "channel": 49,
+      "excluded": false,
+      "spike_count": 11,
+      "rate_hz": 2.2,
+      "active": true,
+      "isi_mean_ms": 448.988,
+      "isi_cv": 0.8675558179411481
+    },
+    {
+      "channel": 50,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 707.5519999999999,
+      "isi_cv": 0.35536825572080283
+    },
+    {
+      "channel": 51,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 1084.56,
+      "isi_cv": 0.10059490080317582
+    },
+    {
+      "channel": 52,
+      "excluded": false,
+      "spike_count": 3,
+      "rate_hz": 0.6,
+      "active": true,
+      "isi_mean_ms": 1531.5000000000002,
+      "isi_cv": 0.4408357819131571
+    },
+    {
+      "channel": 53,
+      "excluded": false,
+      "spike_count": 7,
+      "rate_hz": 1.4,
+      "active": true,
+      "isi_mean_ms": 618.48,
+      "isi_cv": 0.738992801323092
+    },
+    {
+      "channel": 54,
+      "excluded": false,
+      "spike_count": 9,
+      "rate_hz": 1.8,
+      "active": true,
+      "isi_mean_ms": 535.605,
+      "isi_cv": 0.7341109912399875
+    },
+    {
+      "channel": 55,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 473.488,
+      "isi_cv": 0.7888588321489082
+    },
+    {
+      "channel": 56,
+      "excluded": true,
+      "spike_count": 0,
+      "rate_hz": 0.0,
+      "active": false,
+      "isi_mean_ms": null,
+      "isi_cv": null
+    },
+    {
+      "channel": 57,
+      "excluded": false,
+      "spike_count": 11,
+      "rate_hz": 2.2,
+      "active": true,
+      "isi_mean_ms": 421.804,
+      "isi_cv": 0.6882727555464025
+    },
+    {
+      "channel": 58,
+      "excluded": false,
+      "spike_count": 8,
+      "rate_hz": 1.6,
+      "active": true,
+      "isi_mean_ms": 503.42857142857144,
+      "isi_cv": 0.8631327254151074
+    },
+    {
+      "channel": 59,
+      "excluded": false,
+      "spike_count": 4,
+      "rate_hz": 0.8,
+      "active": true,
+      "isi_mean_ms": 1084.7866666666666,
+      "isi_cv": 0.5222054839348393
+    },
+    {
+      "channel": 60,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 1142.12,
+      "isi_cv": 0.9867039049498916
+    },
+    {
+      "channel": 61,
+      "excluded": false,
+      "spike_count": 5,
+      "rate_hz": 1.0,
+      "active": true,
+      "isi_mean_ms": 612.63,
+      "isi_cv": 0.6603860146370528
+    },
+    {
+      "channel": 62,
+      "excluded": false,
+      "spike_count": 6,
+      "rate_hz": 1.2,
+      "active": true,
+      "isi_mean_ms": 929.6880000000001,
+      "isi_cv": 0.586821623723419
+    },
+    {
+      "channel": 63,
+      "excluded": true,
+      "spike_count": 0,
+      "rate_hz": 0.0,
+      "active": false,
+      "isi_mean_ms": null,
+      "isi_cv": null
+    }
+  ],
+  "status": "complete",
+  "data_label": "SYNTHETIC"
+}

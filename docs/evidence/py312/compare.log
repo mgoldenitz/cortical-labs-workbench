@@ -1,0 +1,20 @@
+== wall clock vs wall clock
+same  window_frames
+same  n_channels
+same  n_spikes
+same  samples_sha256
+same  spikes_sha256
+same  metrics (all values)
+RESULT: identical canonical data and metrics
+== wall clock vs accelerated
+same  window_frames
+same  n_channels
+same  n_spikes
+same  samples_sha256
+same  spikes_sha256
+settings differ: {'seed': 42, 'start_offset': 0, 'seconds': 5.0, 'timing_mode': 'wall_clock', 'replay_path': None} vs {'seed': 42, 'start_offset': 0, 'seconds': 5.0, 'timing_mode': 'accelerated', 'replay_path': None}
+same  metrics (all values)
+RESULT: identical canonical data and metrics
+== verify first run
+status recorded in manifest: complete
+verify OK: file checksums and canonical digests match the manifest

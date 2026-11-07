@@ -1,0 +1,19 @@
+{
+  "seconds": 5.0,
+  "seed": 42,
+  "start_offset": 0,
+  "accelerated": false,
+  "replay_path": null,
+  "sample_mean": 170,
+  "spike_percentile": 99.995,
+  "frames_per_second": 25000,
+  "population_bin_ms": 100.0,
+  "active_rate_threshold_hz": 0.1,
+  "extra": {},
+  "window_frames": 125000,
+  "window_start_frame": 0,
+  "timing_mode": "wall_clock",
+  "data_label": "SYNTHETIC",
+  "run_dir": "<evidence>/py313/runs/20261106T223635Z-s42-01ec63",
+  "run_id": "20261106T223635Z-s42-01ec63"
+}

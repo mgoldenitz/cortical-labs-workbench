@@ -1,0 +1,15 @@
+run:    <evidence>/py313/runs/20261106T223635Z-s42-01ec63
+status: COMPLETE  (SYNTHETIC data)
+samples sha256:  a9ce19c8e3fc3655c99aebe350bcc8888515a9214100c6b76886e7dea4a11e0f
+spikes sha256:   0253017365645a7f8233121abfb5bef1cd25d7058dfef28415cf962cd70de810  (342 spikes)
+report: <evidence>/py313/runs/20261106T223635Z-s42-01ec63/report.html
+run:    <evidence>/py313/runs/20261106T223642Z-s42-337788
+status: COMPLETE  (SYNTHETIC data)
+samples sha256:  a9ce19c8e3fc3655c99aebe350bcc8888515a9214100c6b76886e7dea4a11e0f
+spikes sha256:   0253017365645a7f8233121abfb5bef1cd25d7058dfef28415cf962cd70de810  (342 spikes)
+report: <evidence>/py313/runs/20261106T223642Z-s42-337788/report.html
+run:    <evidence>/py313/runs/20261106T223650Z-s42-1d6726
+status: COMPLETE  (SYNTHETIC data)
+samples sha256:  a9ce19c8e3fc3655c99aebe350bcc8888515a9214100c6b76886e7dea4a11e0f
+spikes sha256:   0253017365645a7f8233121abfb5bef1cd25d7058dfef28415cf962cd70de810  (342 spikes)
+report: <evidence>/py313/runs/20261106T223650Z-s42-1d6726/report.html
