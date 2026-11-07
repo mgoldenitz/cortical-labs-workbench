@@ -197,3 +197,54 @@ def test_cli_run_with_default_relative_out_dir(tmp_path, monkeypatch):
     assert m["status"] == "complete", (m.get("error"), m.get("integrity"))
     assert (run_dir / "recording.h5").exists()
     assert cli.main(["verify", str(run_dir.relative_to(tmp_path))]) == 0
+
+
+@pytest.mark.skipif(not procs.supported(), reason="process cleanup is implemented for Linux /proc only")
+def test_interrupt_records_process_cleanup_in_manifest(tmp_path):
+    # Ctrl-C in a terminal sends SIGINT to the foreground process group: the parent and the
+    # worker, but not the simulator's helpers, which run in their own sessions. Reproduce that
+    # by starting the parent in a new process group and signalling the whole group.
+    import os
+    import signal
+    import subprocess
+    import sys
+    import time
+    from pathlib import Path
+
+    out = tmp_path / "runs"
+    code = ("import sys; from pathlib import Path; from workbench.config import RunConfig; "
+            "from workbench.pipeline import run; run(RunConfig(seconds=30, seed=3), Path(sys.argv[1]))")
+    parent = subprocess.Popen([sys.executable, "-c", code, str(out)], start_new_session=True,
+                              stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    try:
+        deadline = time.monotonic() + 60
+        run_dir = None
+        while time.monotonic() < deadline:
+            dirs = list(out.glob("*/manifest.json")) if out.exists() else []
+            if dirs:
+                run_dir = dirs[0].parent
+                cmds = [Path(f"/proc/{p}/cmdline").read_bytes() for p in procs.find_marked(run_dir.name)
+                        if Path(f"/proc/{p}/cmdline").exists()]
+                if any(b"cl-data-producer" in c for c in cmds):
+                    break
+            time.sleep(0.1)
+        else:
+            pytest.fail("acquisition did not start within 60 s")
+        time.sleep(1)
+        os.killpg(parent.pid, signal.SIGINT)
+        output = parent.communicate(timeout=30)[0].decode(errors="replace")
+    finally:
+        if parent.poll() is None:
+            os.killpg(parent.pid, signal.SIGKILL)
+            parent.wait()
+
+    assert parent.returncode != 0 and "KeyboardInterrupt" in output, output[-2000:]  # interrupt propagated
+    m = json.loads((run_dir / "manifest.json").read_text())
+    assert m["status"] == "failed"
+    assert m["error"] == "interrupted by user"
+    cleanup = m["acquisition"]["worker"]["process_cleanup"]
+    assert cleanup["supported"] is True
+    assert cleanup["found"], cleanup
+    assert cleanup["remaining"] == []
+    assert procs.find_marked(m["run_id"]) == []
+    assert cli.main(["verify", str(run_dir)]) != 0
