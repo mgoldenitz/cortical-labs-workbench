@@ -244,7 +244,9 @@ def test_interrupt_records_process_cleanup_in_manifest(tmp_path):
     assert m["error"] == "interrupted by user"
     cleanup = m["acquisition"]["worker"]["process_cleanup"]
     assert cleanup["supported"] is True
-    assert cleanup["found"], cleanup
+    assert set(cleanup) >= {"found", "terminated", "killed", "remaining"}, cleanup
+    # "found" may be empty: SIGINT reaches the worker too, and it can exit, with the simulator's
+    # helpers, before the scan runs. What must hold is that nothing is left.
     assert cleanup["remaining"] == []
     assert procs.find_marked(m["run_id"]) == []
     assert cli.main(["verify", str(run_dir)]) != 0
