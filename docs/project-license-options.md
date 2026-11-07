@@ -1,6 +1,6 @@
 # License options for this project's original code
 
-No license has been chosen. This page lists options for Michael to decide on; it is not a recommendation and not legal advice. It covers only the code written for this project (`src/`, `tests/`, `tools/`, `docs/`, `discovery/`). Third-party material, including cl-sdk under CC BY-NC 4.0, keeps its own terms whatever is chosen here; see [licensing.md](licensing.md).
+Decision (2026-11-07): Michael chose the MIT License for the project's original code; see the root `LICENSE` file and [licensing.md](licensing.md). The rest of this page is the comparison as it stood before the decision. It is not a recommendation and not legal advice. It covers only the code written for this project (`src/`, `tests/`, `tools/`, `docs/`, `discovery/`). Third-party material, including cl-sdk under CC BY-NC 4.0, keeps its own terms whatever is chosen here; see [licensing.md](licensing.md).
 
 | Option | What others may do with this project's code | Main obligations on them | Points specific to this project |
 | --- | --- | --- | --- |

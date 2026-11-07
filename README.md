@@ -125,8 +125,12 @@ One failure is unexplained: `test_runs_complete_with_expected_outputs` failed on
 - [docs/known-issues.md](docs/known-issues.md): accelerated-mode data loss, with versions and reproduction steps
 - [docs/reproducing.md](docs/reproducing.md): exact commands for the Python 3.12 and 3.13 test runs and the determinism evidence; logs in [docs/evidence/](docs/evidence/). The run folders there are sanitized partial bundles (the recordings are left out and scratch paths are redacted), so they are not expected to pass `workbench verify`; see [docs/evidence/REDACTION.md](docs/evidence/REDACTION.md)
 - [docs/licensing.md](docs/licensing.md) and [docs/third-party-licenses.md](docs/third-party-licenses.md): third-party licenses
-- [docs/project-license-options.md](docs/project-license-options.md): options for this project's own license (none chosen)
+- [docs/project-license-options.md](docs/project-license-options.md): the license options that were considered (MIT was chosen)
 - [docs/aws-proposal.md](docs/aws-proposal.md): proposed optional AWS storage and execution (nothing provisioned)
+
+## License
+
+The workbench's original code is licensed under the MIT License; see [LICENSE](LICENSE). cl-sdk is a separate package under its own license, CC BY-NC 4.0, and is not included in this repository. The MIT License covers only this project's code and does not grant any rights to use cl-sdk beyond cl-sdk's own license terms. Commercial use involving cl-sdk, CL1 hardware or Cortical Labs services may require separate permission from Cortical Labs. Details are in [docs/licensing.md](docs/licensing.md).
 
 ## Known limitations
 
@@ -135,4 +139,3 @@ One failure is unexplained: `test_runs_complete_with_expected_outputs` failed on
 - One intermittent test failure is unexplained (see Tests).
 - Process cleanup after a timeout or Ctrl-C works on Linux only.
 - No stimulation or closed-loop features yet; the simulator would not respond to them.
-- The project's own code has no license yet; options are in [docs/project-license-options.md](docs/project-license-options.md).

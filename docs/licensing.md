@@ -15,8 +15,8 @@ This is a factual record for review, not legal advice. Installing cl-sdk with pi
 
 | Material | Origin | License status |
 | --- | --- | --- |
-| `src/workbench/`, `tests/`, `tools/`, `docs/` | Written for this project | No license chosen yet (see below) |
-| `discovery/*.py` | Written for this project; `smoke.py` reproduces a few lines of example calls from cl-api-doc notebooks CL-00, CL-01 and CL-02 | cl-api-doc at commit `a6726472...` has no license file, so reuse terms for its notebook code are not stated. Flagged for review; the copied calls are short API examples. |
+| `src/workbench/`, `tests/`, `tools/`, `docs/` | Written for this project | MIT License (see below) |
+| `discovery/*.py` | Written for this project (MIT License); `smoke.py` reproduces a few lines of example calls from cl-api-doc notebooks CL-00, CL-01 and CL-02 | The project's own code in these files is MIT-licensed. The MIT License cannot grant rights in the copied example calls: cl-api-doc at commit `a6726472...` has no license file, so reuse terms for its notebook code are not stated. Flagged for review; the copied calls are short API examples. |
 | cl-sdk source code | Not included. Installed from PyPI at setup time | CC BY-NC 4.0 |
 | Electrode layout values | Not copied. Read at run time from the private module `cl.analysis._metrics._mea_layout` (`src/workbench/layout.py`) | Stays inside the installed cl-sdk |
 | Other Python dependencies | Installed from PyPI | See [third-party-licenses.md](third-party-licenses.md). Two packages declare no license in their metadata (`dotenv` 0.9.9, a shim that installs `python-dotenv`; `ptyprocess` declares only an ISC classifier). |
@@ -31,4 +31,9 @@ Run outputs (`runs/`, `*.h5`) are ignored by git. Whether simulator output files
 
 ## This project's own code
 
-No license has been chosen for the original code in this repository, so default copyright applies. The options are listed separately in [project-license-options.md](project-license-options.md); no choice is made here.
+Since 2026-11-07 the original code in this repository is licensed under the MIT License, in the root [LICENSE](../LICENSE) file ("Copyright (c) 2026 Michael Goldenitz"), and `pyproject.toml` declares `license = { text = "MIT" }`. The options that were considered are in [project-license-options.md](project-license-options.md).
+
+- The MIT License applies to the workbench's original code only.
+- cl-sdk remains separately licensed under CC BY-NC 4.0. This repository does not include, modify, redistribute or relicense cl-sdk or its documentation.
+- The MIT License on this code does not grant any rights to use cl-sdk beyond cl-sdk's own license terms. Anyone running the workbench installs cl-sdk separately, under cl-sdk's own license.
+- Commercial use involving cl-sdk, CL1 hardware or Cortical Labs services may require separate permission from Cortical Labs.
