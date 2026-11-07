@@ -8,8 +8,10 @@ receive it.
 
 It then reports how long `workbench run` took to exit, which processes with the run's
 marker were alive before Ctrl-C and are alive afterwards, the recorded status, the files
-kept, and the exit code of `workbench verify`. It exits non-zero if the exit took longer
-than --limit seconds, a marked process remains, or verify returned 0.
+kept, the `process_cleanup` record in the manifest, and the exit code of `workbench verify`.
+It exits non-zero if the exit took longer than --limit seconds, a marked process remains,
+the manifest is not failed / "interrupted by user", the cleanup record is missing or lists
+remaining processes, or verify returned 0.
 
     python tools/ctrlc_pty_check.py --out /tmp/ctrlc-check [--delay 2] [--seconds 30]
 """
@@ -119,6 +121,7 @@ def main() -> int:
     after_2s = procs.find_marked(run_id)
 
     manifest = json.loads((run_dir / "manifest.json").read_text())
+    cleanup = (manifest.get("acquisition", {}).get("worker") or {}).get("process_cleanup")
     verify = subprocess.run([str(workbench), "verify", str(run_dir)], capture_output=True, text=True)
     report = {
         "run_id": run_id,
@@ -132,11 +135,14 @@ def main() -> int:
         "status": manifest.get("status"),
         "error": manifest.get("error"),
         "files_kept": sorted(p.name for p in run_dir.iterdir()),
+        "process_cleanup": cleanup,
         "verify_exit_code": verify.returncode,
         "verify_output": verify.stdout.strip().splitlines(),
     }
     print(json.dumps(report, indent=2))
-    ok = exit_s <= args.limit and not after and not after_2s and verify.returncode != 0
+    ok = (exit_s <= args.limit and not after and not after_2s and verify.returncode != 0
+          and manifest.get("status") == "failed" and manifest.get("error") == "interrupted by user"
+          and isinstance(cleanup, dict) and cleanup.get("supported") is True and cleanup.get("remaining") == [])
     print("RESULT:", "PASS" if ok else "FAIL")
     return 0 if ok else 1
 

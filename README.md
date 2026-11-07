@@ -99,7 +99,7 @@ Runs that fail are kept; nothing is deleted. The final status (`complete`, `inco
 - Incomplete run whose recording does not cover the whole window (for example the accelerated-mode data loss): no `metrics.json` or `channel_metrics.csv`, and no canonical digests in the manifest.
 - Failed run with no recording: no `recording.h5`, `metrics.json` or `channel_metrics.csv`; `worker_result.json` only if the simulator process got far enough to write it.
 - Worker that runs past its timeout (by default three times the window plus 90 s): the worker and every simulator process it started are stopped, the run is marked `failed` with a "timed out" error, and the files written so far are kept, including the partial `recording.h5` if there is one.
-- Run stopped with Ctrl-C while the simulator is recording: the worker and simulator processes are stopped the same way, `manifest.json` is set to `failed` with the error "interrupted by user", and no report is written. The folder keeps `config.json`, `worker.log`, `worker_result.json` (with the worker's `KeyboardInterrupt`) and, if recording had started, the SDK's `*_raw.h5` file under its original name. The manifest gets no file inventory and no `process_cleanup` record in this case, so `workbench verify` exits with 1. This was tested on Linux by sending Ctrl-C through a pseudo-terminal ([docs/reproducing.md](docs/reproducing.md#ctrl-c-during-acquisition)). Ctrl-C later, during analysis or report writing, leaves `manifest.json` at `running`.
+- Run stopped with Ctrl-C while the simulator is recording: the worker and simulator processes are stopped the same way, `manifest.json` is set to `failed` with the error "interrupted by user", and no report is written. The folder keeps `config.json`, `worker.log`, `worker_result.json` (with the worker's `KeyboardInterrupt`) and, if recording had started, the SDK's `*_raw.h5` file under its original name. The manifest records the cleanup under `acquisition.worker.process_cleanup`, the same key as after a timeout, but gets no file inventory, so `workbench verify` exits with 1. This was tested on Linux by sending Ctrl-C through a pseudo-terminal ([docs/reproducing.md](docs/reproducing.md#ctrl-c-during-acquisition)). Ctrl-C later, during analysis or report writing, leaves `manifest.json` at `running`.
 - Process killed outright (or the machine stopped): `manifest.json` may still say `running`, later files are absent, and simulator processes may be left running. `workbench verify` exits with 1 or 2 on such a folder, never 0.
 
 - If the report itself cannot be rendered, the manifest records `report_error` and `report.html` may be missing.
@@ -109,7 +109,7 @@ Stopping simulator processes is implemented for Linux only. The cl-sdk simulator
 ## Tests
 
 ```bash
-pytest                 # all 93 tests, about 25 s
+pytest                 # all 94 tests, about 27 s
 pytest -m "not sdk"    # only tests that do not start the simulator
 ```
 
