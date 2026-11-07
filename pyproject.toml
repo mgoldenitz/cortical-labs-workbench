@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Seeded recorder, integrity checks, metrics and static HTML report for the Cortical Labs cl-sdk simulator"
 readme = "README.md"
 requires-python = ">=3.12"
+# MIT covers this project's own code only (LICENSE); cl-sdk keeps its own license.
+license = { text = "MIT" }
 # cl-sdk is pinned exactly: the integrity checks, the private electrode-layout
 # import (src/workbench/layout.py) and the determinism results were verified
 # against 1.0.0 only. cl-sdk itself is licensed CC BY-NC 4.0; see docs/licensing.md.
