@@ -77,10 +77,10 @@ The report is a single HTML file with no external resources. Open the path on th
 `workbench verify` reopens a run folder and checks it against the reference values its own manifest recorded: the manifest's required fields, the file inventory (which must exist and not be empty, and for a complete run must list every output), the size and SHA-256 of every listed file, the canonical sample and spike digests recomputed from `recording.h5`, and the metrics digest recomputed from `metrics.json`. Files in the folder that the manifest does not list are named but not checked. Exit codes:
 
 - 0: the status is `complete` and everything above matches.
-- 1: malformed or inconsistent, so the folder cannot be verified: no manifest, a manifest that is not valid JSON or is missing required fields, an unknown status, a missing or empty file inventory, a missing required output, or any size, checksum or digest mismatch.
+- 1: invalid or inconsistent, so the folder cannot be verified: no manifest, a manifest that is not valid JSON or is missing required fields, an unknown status, a missing or empty file inventory, a missing required output, or any size, checksum or digest mismatch.
 - 2: consistent but not complete: the files match the manifest, but the recorded status is `running`, `incomplete` or `failed`, so this is not a verified complete run.
 
-So 1 means the evidence in the folder is malformed or does not match its own manifest, and 2 means the evidence is intact but records a run that did not complete.
+So 1 means the evidence in the folder is invalid or does not match its own manifest, and 2 means the evidence is intact but records a run that did not complete.
 
 Verification checks consistency, not authenticity. It does not authenticate who produced the run and is not a digital signature: anyone who edits both the files and the manifest can make them agree.
 
